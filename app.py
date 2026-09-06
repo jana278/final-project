@@ -32,11 +32,11 @@ def get_background_image():
 BG_IMAGE = get_background_image()
 
 # ==============================================================================
-# CSS: شريط بحث مدمج في المنتصف مع زر الكاميرا بالداخل وتصميم عصري
+# CSS: ضبط الألوان وتثبيت زر الكاميرا داخل شريط البحث
 # ==============================================================================
 st.markdown(f"""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@500;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap');
 
     .stApp {{
         background:
@@ -62,24 +62,26 @@ st.markdown(f"""
         display: inline-block;
         padding: 6px 16px;
         margin-bottom: 12px;
-        border: 1px solid rgba(125, 211, 252, 0.35);
+        border: 1px solid rgba(56, 189, 248, 0.3);
         border-radius: 999px;
         background: rgba(8, 15, 27, 0.65);
         backdrop-filter: blur(12px);
-        color: #bae6fd;
+        color: #7dd3fc;
         font-size: 0.82rem;
         font-weight: 700;
         letter-spacing: 0.4px;
     }}
 
+    /* اسم المشروع: درجة أغمق متناسقة مع لون الإضاءة في الخلفية */
     .hero-title {{
         font-size: clamp(2.3rem, 5vw, 3.8rem);
         line-height: 1.1;
         font-weight: 800;
-        background: linear-gradient(90deg, #ffffff 0%, #7dd3fc 45%, #c4b5fd 100%);
+        background: linear-gradient(180deg, #93c5fd 0%, #38bdf8 60%, #0284c7 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-bottom: 8px;
+        text-shadow: 0 4px 20px rgba(2, 132, 199, 0.25);
     }}
 
     .hero-subtitle {{
@@ -90,26 +92,34 @@ st.markdown(f"""
         line-height: 1.8;
     }}
 
-    /* حاوية البحث المدمجة */
+    /* حاوية البحث الخارجية */
     [data-testid="stTextInput"] {{
-        position: relative;
-        z-index: 5;
-        border: 1px solid rgba(125, 211, 252, 0.35) !important;
-        border-radius: 36px !important;
-        background: rgba(15, 23, 42, 0.85) !important;
-        box-shadow: 0 20px 45px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1) !important;
+        position: relative !important;
+        z-index: 5 !important;
+        border: 1px solid rgba(56, 189, 248, 0.35) !important;
+        border-radius: 40px !important;
+        background: rgba(15, 23, 42, 0.88) !important;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.5) !important;
         backdrop-filter: blur(16px);
-        padding: 6px !important;
+        padding: 0 !important;
+        height: 60px !important;
+    }}
+
+    [data-testid="stTextInput"] > div {{
+        height: 100% !important;
+        border: none !important;
+        background: transparent !important;
     }}
 
     [data-testid="stTextInput"] input {{
         background: transparent !important;
         border: none !important;
         color: #ffffff !important;
-        height: 56px !important;
+        height: 60px !important;
+        line-height: 60px !important;
         padding-left: 20px !important;
-        padding-right: 70px !important;
-        font-size: 1.1rem !important;
+        padding-right: 68px !important;
+        font-size: 1.05rem !important;
         direction: rtl;
         text-align: right;
     }}
@@ -119,19 +129,19 @@ st.markdown(f"""
         box-shadow: none !important;
     }}
 
-    /* تموضع زر الكاميرا داخل حقل الإدخال */
+    /* تثبيت زرار الكاميرا في السنتر الرأسي تماماً جوه البار */
     [data-testid="stFileUploader"] {{
-        margin-top: -58px !important;
-        height: 54px !important;
+        margin-top: -60px !important;
+        height: 60px !important;
         display: flex !important;
         justify-content: flex-end !important;
         align-items: center !important;
-        padding-right: 14px !important;
+        padding-right: 12px !important;
         pointer-events: none !important;
         border: none !important;
         background: transparent !important;
-        position: relative;
-        z-index: 10;
+        position: relative !important;
+        z-index: 10 !important;
     }}
 
     [data-testid="stFileUploader"] section {{
@@ -140,6 +150,8 @@ st.markdown(f"""
         border: none !important;
         background: transparent !important;
         pointer-events: auto !important;
+        display: flex !important;
+        align-items: center !important;
     }}
 
     [data-testid="stFileUploaderDropzone"] {{
@@ -157,11 +169,14 @@ st.markdown(f"""
         background: rgba(56, 189, 248, 0.15) !important;
         border: 1px solid rgba(56, 189, 248, 0.45) !important;
         border-radius: 50% !important;
-        width: 42px !important;
-        height: 42px !important;
+        width: 38px !important;
+        height: 38px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
         padding: 0 !important;
         cursor: pointer !important;
-        transition: all 0.25s ease !important;
+        transition: all 0.2s ease !important;
     }}
 
     [data-testid="stFileUploader"] button:hover {{
@@ -172,7 +187,8 @@ st.markdown(f"""
 
     [data-testid="stFileUploader"] button::before {{
         content: "📷";
-        font-size: 1.25rem;
+        font-size: 1.15rem;
+        line-height: 1;
     }}
 
     [data-testid="stFileUploader"] button span,
