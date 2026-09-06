@@ -31,7 +31,7 @@ def get_image_data(image_path="background_car.png", mime="image/png"):
 BG_IMAGE = get_image_data("background_car.png", "image/png")
 
 # ==============================================================================
-# CSS: شريط بحث مدمج بزر الكاميرا بدقة مع خلفية الصفحة
+# CSS: شريط بحث مدمج بزر الكاميرا بدون أي نزول أو تشوه
 # ==============================================================================
 st.markdown(f"""
 <style>
@@ -179,7 +179,7 @@ html, body, [data-testid="stAppViewContainer"] {{
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     max-width: 760px;
-    margin: 16px auto 20px;
+    margin: 16px auto 25px;
     gap: 0;
 }}
 
@@ -211,29 +211,30 @@ html, body, [data-testid="stAppViewContainer"] {{
     margin-top: 2px;
 }}
 
-/* Search bar wrapper */
-.search-container-box {{
-    position: relative;
-    width: 100%;
-    margin: 0 auto;
+/* =====================================================
+   شريط البحث الموحد (دمج الأعمدة مع بعض بالملّي)
+   ===================================================== */
+[data-testid="stHorizontalBlock"] {{
+    background: rgba(14, 18, 24, 0.85) !important;
+    border: 1.2px solid rgba(255, 255, 255, 0.22) !important;
+    border-radius: 999px !important;
+    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.6) !important;
+    backdrop-filter: blur(16px) !important;
+    padding: 4px 8px 4px 18px !important;
+    align-items: center !important;
+    gap: 0 !important;
 }}
 
-/* ضبط حقل الإدخال وإزالة المستطيلات الزائدة */
+/* تفريغ الـ Input بالكامل داخل الشريط */
 [data-testid="stTextInput"] {{
-    position: relative !important;
-    width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
 }}
 
 [data-testid="stTextInput"] > div {{
-    border: 1px solid rgba(255,255,255,.24) !important;
-    border-radius: 999px !important;
-    background: rgba(10, 12, 14, 0.78) !important;
-    box-shadow: 0 18px 55px rgba(0,0,0,.60) !important;
-    backdrop-filter: blur(16px) !important;
-    height: 52px !important;
-    overflow: hidden !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
 }}
 
 [data-testid="stTextInput"] [data-baseweb="base-input"],
@@ -241,7 +242,6 @@ html, body, [data-testid="stAppViewContainer"] {{
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
-    height: 100% !important;
 }}
 
 [data-testid="stTextInput"] input {{
@@ -249,13 +249,9 @@ html, body, [data-testid="stAppViewContainer"] {{
     border: none !important;
     box-shadow: none !important;
     color: #fff !important;
-    height: 52px !important;
-    line-height: 52px !important;
-    padding-left: 20px !important;
-    padding-right: 58px !important;
-    font-size: .95rem !important;
-    direction: ltr;
-    text-align: left;
+    height: 48px !important;
+    font-size: 1rem !important;
+    padding: 0 !important;
 }}
 
 [data-testid="stTextInput"] input:focus {{
@@ -264,23 +260,16 @@ html, body, [data-testid="stAppViewContainer"] {{
 }}
 
 [data-testid="stTextInput"] input::placeholder {{
-    color: #b9bcc2 !important;
+    color: #8b929a !important;
 }}
 
-/* تثبيت زر الكاميرا داخل حقل البحث على اليمين */
+/* زرار الكاميرا في نفس السطر */
 [data-testid="stFileUploader"] {{
-    position: absolute !important;
-    top: 0 !important;
-    right: 8px !important;
-    height: 52px !important;
-    width: 44px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    z-index: 20 !important;
-    pointer-events: none !important;
     margin: 0 !important;
     padding: 0 !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
 }}
 
 [data-testid="stFileUploader"] section {{
@@ -288,10 +277,6 @@ html, body, [data-testid="stAppViewContainer"] {{
     min-height: unset !important;
     border: none !important;
     background: transparent !important;
-    pointer-events: auto !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
 }}
 
 [data-testid="stFileUploaderDropzone"] {{
@@ -306,11 +291,11 @@ html, body, [data-testid="stAppViewContainer"] {{
 }}
 
 [data-testid="stFileUploader"] button {{
-    width: 36px !important;
-    height: 36px !important;
+    width: 40px !important;
+    height: 40px !important;
     border-radius: 50% !important;
-    background: rgba(18, 18, 20, 0.9) !important;
-    border: 1px solid rgba(255, 52, 52, 0.6) !important;
+    background: rgba(25, 27, 32, 0.9) !important;
+    border: 1px solid rgba(255, 52, 52, 0.5) !important;
     padding: 0 !important;
     display: flex !important;
     align-items: center !important;
@@ -321,14 +306,14 @@ html, body, [data-testid="stAppViewContainer"] {{
 }}
 
 [data-testid="stFileUploader"] button:hover {{
-    transform: scale(1.08) !important;
-    background: rgba(255, 52, 52, 0.22) !important;
+    transform: scale(1.06) !important;
+    background: rgba(255, 52, 52, 0.25) !important;
     border-color: var(--red) !important;
 }}
 
 [data-testid="stFileUploader"] button:before {{
     content: "📷";
-    font-size: .92rem;
+    font-size: 1.05rem;
     line-height: 1;
 }}
 
@@ -526,7 +511,7 @@ def predict_vision_top5(image_pil, top_k=5):
             for p, idx in zip(top_probs, top_indices)]
 
 # ==============================================================================
-# 3. واجهة البحث
+# 3. واجهة البحث (الأعمدة تضمن تواجدهم في نفس السطر)
 # ==============================================================================
 st.markdown("""
 <div class="hero-box">
@@ -551,18 +536,20 @@ st.markdown("""
 _, col_search, _ = st.columns([1, 2.6, 1])
 
 with col_search:
-    st.markdown('<div class="search-container-box">', unsafe_allow_html=True)
-    user_query = st.text_input(
-        "Search",
-        placeholder="Type your car requirements and press Enter...",
-        label_visibility="collapsed"
-    )
-    uploaded_file = st.file_uploader(
-        "Upload car image",
-        type=["jpg", "jpeg", "png"],
-        label_visibility="collapsed"
-    )
-    st.markdown('</div>', unsafe_allow_html=True)
+    # تقسيم مدخل النص وزر الكاميرا في نفس السطر بجوار بعض
+    col_input, col_btn = st.columns([0.88, 0.12])
+    with col_input:
+        user_query = st.text_input(
+            "Search",
+            placeholder="Type your car requirements and press Enter...",
+            label_visibility="collapsed"
+        )
+    with col_btn:
+        uploaded_file = st.file_uploader(
+            "Upload car image",
+            type=["jpg", "jpeg", "png"],
+            label_visibility="collapsed"
+        )
 
 # ==============================================================================
 # 4. معالجة النتائج
@@ -639,7 +626,6 @@ if has_query or has_image:
 
     top_results = sub_df.sort_values("match_score", ascending=False).head(6).copy()
 
-    # التنبؤ بالسعر العادل مع تفادي الـ KeyError
     try:
         try:
             pred_features = list(full_pricing_pipeline.feature_names_in_)
