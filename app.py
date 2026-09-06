@@ -32,7 +32,7 @@ def get_background_image():
 BG_IMAGE = get_background_image()
 
 # ==============================================================================
-# CSS: ضبط الألوان وتثبيت زر الكاميرا داخل شريط البحث
+# CSS: شريط بحث كحلي مضيء مدمج تماماً وإلغاء المستطيل الرصاصي
 # ==============================================================================
 st.markdown(f"""
 <style>
@@ -72,7 +72,7 @@ st.markdown(f"""
         letter-spacing: 0.4px;
     }}
 
-    /* اسم المشروع: درجة أغمق متناسقة مع لون الإضاءة في الخلفية */
+    /* اسم المشروع: درجة فخمة متناسقة مع الخلفية */
     .hero-title {{
         font-size: clamp(2.3rem, 5vw, 3.8rem);
         line-height: 1.1;
@@ -92,33 +92,47 @@ st.markdown(f"""
         line-height: 1.8;
     }}
 
-    /* حاوية البحث الخارجية */
+    /* الحاوية المشتركة لشريط البحث */
+    .search-wrapper {{
+        position: relative;
+        width: 100%;
+        margin-bottom: 10px;
+    }}
+
+    /* إزالة المستطيل الرصاصي بالكامل وجعل الحاوية الكحلي هي الأصل */
     [data-testid="stTextInput"] {{
-        position: relative !important;
-        z-index: 5 !important;
-        border: 1px solid rgba(56, 189, 248, 0.35) !important;
-        border-radius: 40px !important;
-        background: rgba(15, 23, 42, 0.88) !important;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.5) !important;
-        backdrop-filter: blur(16px);
+        width: 100% !important;
+        margin: 0 !important;
         padding: 0 !important;
-        height: 60px !important;
     }}
 
     [data-testid="stTextInput"] > div {{
-        height: 100% !important;
-        border: none !important;
+        border: 1.5px solid rgba(56, 189, 248, 0.45) !important;
+        border-radius: 40px !important;
+        background: rgba(10, 20, 35, 0.82) !important;
+        box-shadow: 0 0 25px rgba(56, 189, 248, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.15) !important;
+        backdrop-filter: blur(18px) !important;
+        height: 60px !important;
+        overflow: hidden !important;
+    }}
+
+    [data-testid="stTextInput"] [data-baseweb="base-input"],
+    [data-testid="stTextInput"] [data-baseweb="input"] {{
         background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        height: 100% !important;
     }}
 
     [data-testid="stTextInput"] input {{
         background: transparent !important;
         border: none !important;
+        box-shadow: none !important;
         color: #ffffff !important;
         height: 60px !important;
         line-height: 60px !important;
-        padding-left: 20px !important;
-        padding-right: 68px !important;
+        padding-left: 25px !important;
+        padding-right: 68px !important; /* مساحة لزر الكاميرا */
         font-size: 1.05rem !important;
         direction: rtl;
         text-align: right;
@@ -129,19 +143,25 @@ st.markdown(f"""
         box-shadow: none !important;
     }}
 
-    /* تثبيت زرار الكاميرا في السنتر الرأسي تماماً جوه البار */
+    [data-testid="stTextInput"] input::placeholder {{
+        color: #94a3b8 !important;
+        opacity: 0.85 !important;
+    }}
+
+    /* تثبيت زرار الكاميرا Absolute داخل البار بالضبط في السنتر */
     [data-testid="stFileUploader"] {{
-        margin-top: -60px !important;
+        position: absolute !important;
+        top: 0 !important;
+        right: 12px !important;
         height: 60px !important;
+        width: 44px !important;
         display: flex !important;
-        justify-content: flex-end !important;
         align-items: center !important;
-        padding-right: 12px !important;
-        pointer-events: none !important;
-        border: none !important;
-        background: transparent !important;
-        position: relative !important;
+        justify-content: center !important;
         z-index: 10 !important;
+        pointer-events: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }}
 
     [data-testid="stFileUploader"] section {{
@@ -152,6 +172,7 @@ st.markdown(f"""
         pointer-events: auto !important;
         display: flex !important;
         align-items: center !important;
+        justify-content: center !important;
     }}
 
     [data-testid="stFileUploaderDropzone"] {{
@@ -166,8 +187,8 @@ st.markdown(f"""
     }}
 
     [data-testid="stFileUploader"] button {{
-        background: rgba(56, 189, 248, 0.15) !important;
-        border: 1px solid rgba(56, 189, 248, 0.45) !important;
+        background: rgba(56, 189, 248, 0.2) !important;
+        border: 1px solid rgba(56, 189, 248, 0.5) !important;
         border-radius: 50% !important;
         width: 38px !important;
         height: 38px !important;
@@ -176,13 +197,15 @@ st.markdown(f"""
         justify-content: center !important;
         padding: 0 !important;
         cursor: pointer !important;
-        transition: all 0.2s ease !important;
+        transition: all 0.25s ease !important;
+        box-shadow: 0 0 10px rgba(56, 189, 248, 0.25) !important;
     }}
 
     [data-testid="stFileUploader"] button:hover {{
         transform: scale(1.08) !important;
-        background: rgba(56, 189, 248, 0.3) !important;
+        background: rgba(56, 189, 248, 0.38) !important;
         border-color: #38bdf8 !important;
+        box-shadow: 0 0 18px rgba(56, 189, 248, 0.45) !important;
     }}
 
     [data-testid="stFileUploader"] button::before {{
@@ -324,24 +347,20 @@ def parse_query_to_filters(query, catalog_df):
     text = normalize_text(query)
     filters = {}
     
-    # 1. الميزانية
     min_p, max_p = extract_budget(text)
     if min_p is not None: filters["min_price"] = min_p
     if max_p is not None: filters["max_price"] = max_p
 
-    # 2. ناقل الحركة
     for k, v in TRANS_MAP.items():
         if k in text:
             filters["transmission"] = v
             break
 
-    # 3. الحالة
     for k, v in CONDITION_MAP.items():
         if k in text:
             filters["car_condition"] = v
             break
 
-    # 4. الماركة
     if "brand" in catalog_df.columns:
         brands = [b for b in catalog_df["brand"].dropna().unique() if str(b).strip()]
         for b in sorted(brands, key=len, reverse=True):
@@ -349,7 +368,6 @@ def parse_query_to_filters(query, catalog_df):
                 filters["brand"] = b
                 break
 
-    # 5. المكان
     if "location" in catalog_df.columns:
         for ar_key, mapped_val in CITY_MAP.items():
             if ar_key in text:
@@ -385,6 +403,7 @@ st.markdown("""
 _, col_search, _ = st.columns([1, 2.6, 1])
 
 with col_search:
+    st.markdown('<div class="search-wrapper">', unsafe_allow_html=True)
     user_query = st.text_input(
         "Search",
         placeholder="مثال: كيا سبورتاج اوتوماتيك في القاهرة تحت 2 مليون...",
@@ -395,6 +414,7 @@ with col_search:
         type=["jpg", "jpeg", "png"],
         label_visibility="collapsed"
     )
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # ==============================================================================
 # 4. استخراج ومعالجة النتائج
