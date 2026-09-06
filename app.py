@@ -31,7 +31,7 @@ def get_image_data(image_path="background_car.png", mime="image/png"):
 BG_IMAGE = get_image_data("background_car.png", "image/png")
 
 # ==============================================================================
-# CSS: تفريغ الرمادي تماماً ودمج الكبسولة في شكل واحد بالملي
+# CSS: كبسولة بحث واضحة بحدود نظيفة وكاميرا مفرغة في نفس السطر
 # ==============================================================================
 st.markdown(f"""
 <style>
@@ -212,9 +212,8 @@ html, body, [data-testid="stAppViewContainer"] {{
 }}
 
 /* =====================================================
-   شريط البحث: كبسولة واحدة مطابقة 100% وإلغاء التكرار
+   شريط البحث: كبسولة واحدة بحدود واضحة ومفرغة من الداخل
    ===================================================== */
-/* منع أي خلفيات أو حدود من الـ columns الكبيرة */
 div[data-testid="stHorizontalBlock"] {{
     background: transparent !important;
     border: none !important;
@@ -222,20 +221,26 @@ div[data-testid="stHorizontalBlock"] {{
     padding: 0 !important;
 }}
 
-/* الكبسولة الوحيدة المستهدفة بدقة */
+/* الحاوية المستهدفة الوحيدة التي تحمل الـ Border والخلفية */
 .search-pill-wrapper div[data-testid="stHorizontalBlock"] {{
     background: rgba(18, 22, 29, 0.82) !important;
-    border: 1px solid rgba(255, 255, 255, 0.16) !important;
+    border: 1.2px solid rgba(255, 255, 255, 0.22) !important;
     border-radius: 999px !important;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), inset 0 1px 1px rgba(255, 255, 255, 0.08) !important;
-    backdrop-filter: blur(20px) !important;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.75), inset 0 1px 1px rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(18px) !important;
     padding: 0 18px 0 24px !important;
     align-items: center !important;
     height: 52px !important;
     width: 100% !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
 }}
 
-/* إزالة الرمادي الفاتح من كافة درجات الـ DOM */
+.search-pill-wrapper div[data-testid="stHorizontalBlock"]:focus-within {{
+    border-color: rgba(255, 52, 52, 0.65) !important;
+    box-shadow: 0 0 20px rgba(255, 52, 52, 0.25) !important;
+}}
+
+/* تفريغ حقل النص الداخلي تماماً لمنع ظهور أي مستطيلات رمادية */
 div[data-testid="stTextInput"],
 div[data-testid="stTextInput"] div,
 div[data-testid="stTextInput"] div[data-baseweb="input"],
@@ -267,7 +272,9 @@ div[data-testid="stTextInput"] input::placeholder {{
     color: #71767f !important;
 }}
 
-/* زرار الكاميرا: مفرغ بدون دوائر وتكبير عند الـ Hover */
+/* =====================================================
+   أيقونة الكاميرا: بدون أي دائرة ومفرغة تماماً مع تكبير عند الـ Hover
+   ===================================================== */
 div[data-testid="stFileUploader"] {{
     background: transparent !important;
     border: none !important;
