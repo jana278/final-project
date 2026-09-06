@@ -1,5 +1,6 @@
 import os
 import re
+import base64
 import unicodedata
 from PIL import Image
 import numpy as np
@@ -18,133 +19,257 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+
+# صورة العربية المستخدمة كخلفية كاملة للواجهة
+@st.cache_data(show_spinner=False)
+def get_background_image():
+    image_path = "hero_car.jpg"
+    if not os.path.exists(image_path):
+        return ""
+    with open(image_path, "rb") as f:
+        encoded = base64.b64encode(f.read()).decode("utf-8")
+    return f"data:image/jpeg;base64,{encoded}"
+
+BG_IMAGE = get_background_image()
+
 # ==============================================================================
 # CSS: شريط بحث مدمج في المنتصف مع أيقونة الكاميرا بالداخل
 # ==============================================================================
-st.markdown("""
+st.markdown(f"""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@500;700&display=swap');
 
-    .stApp {
-        background: radial-gradient(130% 100% at 50% -10%, #0d1b2a 0%, #060d17 60%, #020509 100%);
+    /* ============================================================
+       الخلفية: صورة العربية تغطي الصفحة كلها مع طبقة داكنة
+       ============================================================ */
+    .stApp {{
+        background:
+            linear-gradient(180deg, rgba(2, 5, 9, 0.56) 0%, rgba(2, 5, 9, 0.76) 48%, rgba(2, 5, 9, 0.94) 100%),
+            url("{BG_IMAGE}") center center / cover fixed no-repeat !important;
         color: #f8fafc;
         font-family: 'Cairo', 'Plus Jakarta Sans', sans-serif;
-    }
+    }}
 
-    /* العنوان الرئيسي في المنتصف */
-    .hero-box {
+    .main .block-container {{
+        padding-top: 1.5rem;
+        padding-bottom: 3rem;
+        max-width: 1180px;
+    }}
+
+    /* تأثير زجاجي خفيف فوق الخلفية */
+    .main .block-container::before {{
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background: radial-gradient(circle at 50% 18%, rgba(56, 189, 248, 0.08), transparent 34%);
+        z-index: -1;
+    }}
+
+    /* ============================================================
+       Hero جديد - أكثر فخامة ووضوحاً
+       ============================================================ */
+    .hero-box {{
         text-align: center;
-        padding: 55px 15px 25px 15px;
-    }
-    .hero-title {
-        font-size: 2.8rem;
+        padding: 48px 15px 30px 15px;
+        position: relative;
+    }}
+
+    .hero-kicker {{
+        display: inline-block;
+        padding: 7px 16px;
+        margin-bottom: 13px;
+        border: 1px solid rgba(125, 211, 252, 0.35);
+        border-radius: 999px;
+        background: rgba(8, 15, 27, 0.55);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        color: #bae6fd;
+        font-size: 0.82rem;
+        font-weight: 700;
+        letter-spacing: 0.4px;
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
+    }}
+
+    .hero-title {{
+        font-size: clamp(2.4rem, 5vw, 4.1rem);
+        line-height: 1.05;
         font-weight: 800;
-        background: linear-gradient(90deg, #38bdf8, #818cf8, #c084fc);
+        letter-spacing: -1px;
+        background: linear-gradient(90deg, #ffffff 0%, #7dd3fc 42%, #c4b5fd 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin-bottom: 6px;
-    }
-    .hero-subtitle {
-        color: #94a3b8;
-        font-size: 1.05rem;
-    }
+        margin-bottom: 10px;
+        text-shadow: 0 10px 40px rgba(0,0,0,0.35);
+    }}
 
-    /* شريط البحث الموحد */
-    [data-testid="stTextInput"] input {
-        background: rgba(15, 23, 42, 0.9) !important;
-        border: 1.5px solid rgba(56, 189, 248, 0.35) !important;
+    .hero-subtitle {{
+        color: #dbeafe;
+        font-size: 1.02rem;
+        max-width: 720px;
+        margin: 0 auto;
+        line-height: 1.9;
+        text-shadow: 0 2px 12px rgba(0,0,0,0.8);
+    }}
+
+    /* ============================================================
+       بوكس البحث - شكل مستوحى من جسم العربية / الكابينة
+       ============================================================ */
+    [data-testid="stTextInput"] {{
+        position: relative;
+        z-index: 5;
+        padding: 18px 20px 20px 20px !important;
+        border: 1px solid rgba(125, 211, 252, 0.38) !important;
+        border-radius: 48px 48px 28px 28px !important;
+        background:
+            linear-gradient(180deg, rgba(17, 28, 43, 0.88), rgba(5, 11, 19, 0.92)) !important;
+        box-shadow:
+            0 24px 60px rgba(0,0,0,0.48),
+            inset 0 1px 0 rgba(255,255,255,0.08),
+            0 0 0 1px rgba(56, 189, 248, 0.05) !important;
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+    }}
+
+    /* سقف العربية / الزجاج الأمامي */
+    [data-testid="stTextInput"]::before {{
+        content: "";
+        position: absolute;
+        top: -17px;
+        left: 31%;
+        width: 38%;
+        height: 31px;
+        border: 1px solid rgba(125, 211, 252, 0.28);
+        border-bottom: 0;
+        border-radius: 48px 48px 0 0;
+        background: linear-gradient(180deg, rgba(10,18,29,0.55), rgba(10,18,29,0));
+        transform: perspective(90px) rotateX(-5deg);
+        pointer-events: none;
+    }}
+
+    [data-testid="stTextInput"] input {{
+        background: rgba(2, 7, 14, 0.74) !important;
+        border: 1px solid rgba(148, 163, 184, 0.23) !important;
         color: #ffffff !important;
-        border-radius: 40px !important;
-        height: 60px !important;
+        border-radius: 30px !important;
+        height: 62px !important;
         padding-left: 25px !important;
-        padding-right: 65px !important;
-        font-size: 1.1rem !important;
-        box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6) !important;
+        padding-right: 72px !important;
+        font-size: 1.08rem !important;
+        box-shadow:
+            inset 0 2px 12px rgba(0,0,0,0.35),
+            0 8px 25px rgba(0,0,0,0.22) !important;
         transition: all 0.3s ease !important;
         direction: rtl;
         text-align: right;
-    }
-    [data-testid="stTextInput"] input:focus {
-        border-color: #38bdf8 !important;
-        box-shadow: 0 0 25px rgba(56, 189, 248, 0.45) !important;
-    }
+    }}
 
-    /* رفع زرار الصورة ليدخل جوه شريط البحث كأيقونة */
-    [data-testid="stFileUploader"] {
-        margin-top: -60px !important;
-        height: 60px !important;
+    [data-testid="stTextInput"] input::placeholder {{
+        color: #94a3b8 !important;
+    }}
+
+    [data-testid="stTextInput"] input:focus {{
+        border-color: #38bdf8 !important;
+        box-shadow:
+            0 0 0 3px rgba(56, 189, 248, 0.11),
+            0 0 28px rgba(56, 189, 248, 0.24),
+            inset 0 2px 12px rgba(0,0,0,0.35) !important;
+    }}
+
+    /* زر رفع الصورة يظل داخل منطقة البحث كزر كاميرا */
+    [data-testid="stFileUploader"] {{
+        margin-top: -62px !important;
+        height: 62px !important;
         display: flex !important;
         justify-content: flex-end !important;
         align-items: center !important;
-        padding-right: 18px !important;
+        padding-right: 28px !important;
         pointer-events: none !important;
         border: none !important;
         background: transparent !important;
-    }
-    [data-testid="stFileUploader"] section {
+        position: relative;
+        z-index: 10;
+    }}
+
+    [data-testid="stFileUploader"] section {{
         padding: 0 !important;
         min-height: unset !important;
         border: none !important;
         background: transparent !important;
         pointer-events: auto !important;
-    }
-    [data-testid="stFileUploaderDropzone"] {
+    }}
+
+    [data-testid="stFileUploaderDropzone"] {{
         padding: 0 !important;
         border: none !important;
         background: transparent !important;
-    }
-    [data-testid="stFileUploaderDropzoneInstructions"],
-    [data-testid="stFileUploaderDropzone"] > div:not(:has(button)) {
-        display: none !important;
-    }
+    }}
 
-    /* تحويل الزرار لأيقونة كاميرا نيون */
-    [data-testid="stFileUploader"] button {
-        background: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
+    [data-testid="stFileUploaderDropzoneInstructions"],
+    [data-testid="stFileUploaderDropzone"] > div:not(:has(button)) {{
+        display: none !important;
+    }}
+
+    [data-testid="stFileUploader"] button {{
+        background: rgba(56, 189, 248, 0.10) !important;
+        border: 1px solid rgba(56, 189, 248, 0.35) !important;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.3) !important;
+        border-radius: 50% !important;
+        width: 44px !important;
+        height: 44px !important;
         padding: 4px !important;
         cursor: pointer !important;
-        color: #38bdf8 !important;
-        transition: transform 0.2s ease !important;
-    }
-    [data-testid="stFileUploader"] button:hover {
-        transform: scale(1.2);
-    }
-    [data-testid="stFileUploader"] button::before {
+        color: #7dd3fc !important;
+        transition: all 0.2s ease !important;
+    }}
+
+    [data-testid="stFileUploader"] button:hover {{
+        transform: scale(1.08) !important;
+        background: rgba(56, 189, 248, 0.18) !important;
+        border-color: #38bdf8 !important;
+        box-shadow: 0 0 20px rgba(56, 189, 248, 0.25) !important;
+    }}
+
+    [data-testid="stFileUploader"] button::before {{
         content: "📷";
-        font-size: 1.45rem;
-    }
+        font-size: 1.25rem;
+    }}
+
     [data-testid="stFileUploader"] button span,
-    [data-testid="stFileUploader"] button p {
+    [data-testid="stFileUploader"] button p {{
         display: none !important;
-    }
+    }}
 
-    /* اسم الملف بعد الرفع */
-    [data-testid="stFileUploaderFile"] {
-        margin-top: 15px !important;
-        background: rgba(15, 23, 42, 0.85) !important;
-        border: 1px solid rgba(56, 189, 248, 0.3) !important;
-        border-radius: 12px !important;
+    /* اسم الصورة بعد الرفع */
+    [data-testid="stFileUploaderFile"] {{
+        margin-top: 16px !important;
+        background: rgba(5, 12, 22, 0.86) !important;
+        border: 1px solid rgba(56, 189, 248, 0.28) !important;
+        border-radius: 14px !important;
         pointer-events: auto !important;
-    }
+        backdrop-filter: blur(10px);
+    }}
 
-    /* كروت النتائج */
-    .car-card {
-        background: rgba(15, 23, 42, 0.75);
+    /* ============================================================
+       كروت النتائج - باقي الكونسيبت كما هو مع لمسة glass بسيطة
+       ============================================================ */
+    .car-card {{
+        background: rgba(15, 23, 42, 0.78);
         border: 1px solid rgba(56, 189, 248, 0.2);
         border-radius: 16px;
         padding: 22px;
         margin-bottom: 16px;
         transition: all 0.2s ease;
         box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
-    }
-    .car-card:hover {
+        backdrop-filter: blur(8px);
+    }}
+
+    .car-card:hover {{
         border-color: rgba(56, 189, 248, 0.6);
         transform: translateY(-2px);
-    }
+    }}
 
-    .deal-badge-great {
+    .deal-badge-great {{
         background: rgba(34, 197, 94, 0.15);
         border: 1px solid #22c55e;
         color: #4ade80;
@@ -152,8 +277,9 @@ st.markdown("""
         padding: 4px 12px;
         border-radius: 20px;
         font-size: 0.85rem;
-    }
-    .deal-badge-overpriced {
+    }}
+
+    .deal-badge-overpriced {{
         background: rgba(239, 68, 68, 0.15);
         border: 1px solid #ef4444;
         color: #f87171;
@@ -161,8 +287,9 @@ st.markdown("""
         padding: 4px 12px;
         border-radius: 20px;
         font-size: 0.85rem;
-    }
-    .deal-badge-fair {
+    }}
+
+    .deal-badge-fair {{
         background: rgba(234, 179, 8, 0.15);
         border: 1px solid #eab308;
         color: #facc15;
@@ -170,7 +297,14 @@ st.markdown("""
         padding: 4px 12px;
         border-radius: 20px;
         font-size: 0.85rem;
-    }
+    }}
+
+    /* تحسين العرض على الموبايل */
+    @media (max-width: 700px) {{
+        .hero-box {{ padding-top: 30px; }}
+        .hero-subtitle {{ font-size: 0.92rem; }}
+        [data-testid="stTextInput"] {{ border-radius: 34px 34px 22px 22px !important; }}
+    }}
 </style>
 """, unsafe_allow_html=True)
 
@@ -277,6 +411,7 @@ def predict_vision_top5(image_pil, top_k=5):
 # ==============================================================================
 st.markdown("""
 <div class="hero-box">
+    <div class="hero-kicker">🚘 SMART CAR MARKET</div>
     <div class="hero-title">Apex Motors</div>
     <div class="hero-subtitle">محرك البحث الذكي وتقييم أسعار السيارات في السوق المصري</div>
 </div>
