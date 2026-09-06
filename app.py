@@ -31,7 +31,7 @@ def get_image_data(image_path="background_car.png", mime="image/png"):
 BG_IMAGE = get_image_data("background_car.png", "image/png")
 
 # ==============================================================================
-# CSS: شريط بحث مفرغ وأيقونة كاميرا حرة بدون أي دوائر
+# CSS: كبسولة بحث مطابقة للصورة تماماً
 # ==============================================================================
 st.markdown(f"""
 <style>
@@ -63,7 +63,7 @@ html, body, [data-testid="stAppViewContainer"] {{
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    opacity: .82;
+    opacity: .85;
 }}
 
 .background-car:before {{
@@ -71,8 +71,8 @@ html, body, [data-testid="stAppViewContainer"] {{
     position: absolute;
     inset: 0;
     background:
-        linear-gradient(90deg, rgba(0,0,0,.72) 0%, rgba(0,0,0,.34) 48%, rgba(0,0,0,.58) 100%),
-        linear-gradient(180deg, rgba(0,0,0,.30) 0%, rgba(0,0,0,.08) 46%, rgba(0,0,0,.72) 100%);
+        linear-gradient(90deg, rgba(0,0,0,.75) 0%, rgba(0,0,0,.35) 48%, rgba(0,0,0,.60) 100%),
+        linear-gradient(180deg, rgba(0,0,0,.30) 0%, rgba(0,0,0,.10) 46%, rgba(0,0,0,.75) 100%);
 }}
 
 .background-car:after {{
@@ -128,16 +128,16 @@ html, body, [data-testid="stAppViewContainer"] {{
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 16px;
+    padding: 7px 16px;
     margin-bottom: 12px;
-    border: 1px solid rgba(255,255,255,.22);
+    border: 1px solid rgba(255,255,255,.18);
     border-radius: 999px;
-    background: rgba(0,0,0,.4);
-    color: #e9e9eb;
+    background: rgba(15, 17, 21, 0.6);
+    color: #e2e4e9;
     font-size: .72rem;
     font-weight: 800;
     letter-spacing: 2px;
-    backdrop-filter: blur(9px);
+    backdrop-filter: blur(10px);
 }}
 
 .hero-title {{
@@ -155,7 +155,7 @@ html, body, [data-testid="stAppViewContainer"] {{
 }}
 
 .hero-subtitle {{
-    color: #e1e3e7;
+    color: #d1d5db;
     font-size: .95rem;
     max-width: 620px;
     margin: 12px auto 0;
@@ -164,12 +164,12 @@ html, body, [data-testid="stAppViewContainer"] {{
 }}
 
 .hero-line {{
-    width: 56px;
+    width: 54px;
     height: 3px;
     background: var(--red);
     border-radius: 99px;
     margin: 12px auto 0;
-    box-shadow: 0 0 22px rgba(255,52,52,.45);
+    box-shadow: 0 0 20px rgba(255,52,52,.45);
 }}
 
 /* Features */
@@ -186,7 +186,7 @@ html, body, [data-testid="stAppViewContainer"] {{
 .feature-item {{
     text-align: center;
     padding: 5px 18px;
-    border-right: 1px solid rgba(255,255,255,.16);
+    border-right: 1px solid rgba(255,255,255,.14);
 }}
 
 .feature-item:last-child {{
@@ -206,25 +206,28 @@ html, body, [data-testid="stAppViewContainer"] {{
 }}
 
 .feature-desc {{
-    color: #aeb2ba;
+    color: #9ca3af;
     font-size: .65rem;
     margin-top: 2px;
 }}
 
 /* =====================================================
-   شريط البحث: مظهر داكن موحد
+   كبسولة البحث: مطابقة لشكل الصورة
    ===================================================== */
 div[data-testid="stHorizontalBlock"] {{
-    background: rgba(15, 18, 24, 0.88) !important;
-    border: 1px solid rgba(255, 255, 255, 0.22) !important;
+    background: rgba(18, 22, 29, 0.72) !important;
+    border: 1px solid rgba(255, 255, 255, 0.16) !important;
     border-radius: 999px !important;
-    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.6) !important;
-    backdrop-filter: blur(16px) !important;
-    padding: 3px 12px 3px 22px !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), inset 0 1px 1px rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(20px) !important;
+    padding: 4px 10px 4px 24px !important;
     align-items: center !important;
-    height: 56px !important;
+    height: 54px !important;
+    max-width: 740px !important;
+    margin: 0 auto !important;
 }}
 
+/* تفريغ المستطيل الرمادي نهائياً وجعل كل الطبقات شفافة */
 div[data-testid="stTextInput"],
 div[data-testid="stTextInput"] * {{
     background: transparent !important;
@@ -243,22 +246,20 @@ div[data-testid="stTextInput"] {{
 div[data-testid="stTextInput"] input {{
     background: transparent !important;
     background-color: transparent !important;
-    color: #fff !important;
-    height: 50px !important;
-    line-height: 50px !important;
-    font-size: 0.98rem !important;
+    color: #ffffff !important;
+    height: 46px !important;
+    line-height: 46px !important;
+    font-size: 0.95rem !important;
     padding: 0 !important;
     margin: 0 !important;
     border: none !important;
 }}
 
 div[data-testid="stTextInput"] input::placeholder {{
-    color: #838890 !important;
+    color: #71767f !important;
 }}
 
-/* =====================================================
-   أيقونة الكاميرا: إزالة الدائرة والحدود نهائياً
-   ===================================================== */
+/* زرار الكاميرا: دائرة داكنة صغيرة مدمجة على اليمين */
 div[data-testid="stFileUploader"] {{
     background: transparent !important;
     border: none !important;
@@ -266,7 +267,7 @@ div[data-testid="stFileUploader"] {{
     padding: 0 !important;
     display: flex !important;
     align-items: center !important;
-    justify-content: center !important;
+    justify-content: flex-end !important;
 }}
 
 div[data-testid="stFileUploader"] section {{
@@ -288,32 +289,34 @@ div[data-testid="stFileUploaderDropzone"] > div:not(:has(button)) {{
 }}
 
 div[data-testid="stFileUploader"] button {{
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    border-radius: 0 !important;
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 50% !important;
+    background: rgba(28, 32, 40, 0.85) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
     padding: 0 !important;
     margin: 0 !important;
-    width: auto !important;
-    height: auto !important;
-    cursor: pointer !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    transition: transform .2s ease, opacity .2s ease !important;
-    opacity: 0.85;
+    cursor: pointer !important;
+    transition: all .2s ease !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
 }}
 
 div[data-testid="stFileUploader"] button:hover {{
-    transform: scale(1.18) !important;
-    background: transparent !important;
-    opacity: 1 !important;
+    transform: scale(1.08) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    background: rgba(35, 40, 50, 0.95) !important;
 }}
 
 div[data-testid="stFileUploader"] button:before {{
     content: "📷";
-    font-size: 1.35rem;
-    line-height: 1;
+    font-size: 1.05rem;
+    line-height: 1 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }}
 
 div[data-testid="stFileUploader"] button span,
@@ -327,18 +330,18 @@ div[data-testid="stFileUploaderFile"] {{
 
 /* Cards & Badges */
 .car-card {{
-    background: rgba(5,6,8,.78);
-    border: 1px solid rgba(255,255,255,.15);
+    background: rgba(10, 12, 16, 0.82);
+    border: 1px solid rgba(255,255,255,.14);
     border-radius: 18px;
     padding: 22px;
     margin-bottom: 16px;
-    box-shadow: 0 16px 40px rgba(0,0,0,.52);
+    box-shadow: 0 16px 40px rgba(0,0,0,.55);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
 }}
 
 .car-card:hover {{
-    border-color: rgba(255,255,255,.30);
+    border-color: rgba(255,255,255,.28);
     transform: translateY(-2px);
 }}
 
@@ -529,7 +532,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-_, col_search, _ = st.columns([1, 2.6, 1])
+_, col_search, _ = st.columns([1, 2.8, 1])
 
 with col_search:
     col_input, col_btn = st.columns([0.92, 0.08])
@@ -655,7 +658,7 @@ if has_query or has_image:
 
     _, col_results, _ = st.columns([1, 2.6, 1])
     with col_results:
-        st.markdown('<div class="results-title">Best Matches</div>', unsafe_allow_html=True)
+        st.markdown('<div style="color:#fff; font-size:1.15rem; font-weight:700; margin:25px 0 15px;">Best Matches</div>', unsafe_allow_html=True)
 
         for _, row in top_results.iterrows():
             b_name = row.get("brand", "")
@@ -708,7 +711,7 @@ if has_query or has_image:
             """, unsafe_allow_html=True)
 else:
     st.markdown("""
-    <div class="empty-state">
+    <div style="text-align: center; color: #8b929a; margin-top: 30px;">
         <p style="font-size: 0.95rem;">Type your car requirements and press <strong>Enter</strong>, or click the camera 📷 to upload a car image</p>
     </div>
     """, unsafe_allow_html=True)
