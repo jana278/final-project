@@ -31,13 +31,15 @@ def get_image_data(image_path="background_car.png", mime="image/png"):
 BG_IMAGE = get_image_data("background_car.png", "image/png")
 
 # ==============================================================================
-# CSS: كبسولة بحث واضحة بحدود نظيفة وكاميرا مفرغة في نفس السطر
+# CSS: خلفية شريط البحث بأغمق درجات الأحمر (Darkest Shade of Red)
 # ==============================================================================
 st.markdown(f"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 :root {{
     --red: #ff3434;
+    --darkest-red: #2a0404;
+    --dark-red-border: #4a0808;
     --white: #f7f7f7;
     --muted: #a9adb5;
 }}
@@ -212,69 +214,51 @@ html, body, [data-testid="stAppViewContainer"] {{
 }}
 
 /* =====================================================
-   شريط البحث: كبسولة واحدة بحدود واضحة ومفرغة من الداخل
+   شريط البحث: أغمق درجة أحمر (Deep Dark Red)
    ===================================================== */
 div[data-testid="stHorizontalBlock"] {{
     background: transparent !important;
     border: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
 }}
 
-/* الحاوية المستهدفة الوحيدة التي تحمل الـ Border والخلفية */
-.search-pill-wrapper div[data-testid="stHorizontalBlock"] {{
-    background: rgba(18, 22, 29, 0.82) !important;
-    border: 1.2px solid rgba(255, 255, 255, 0.22) !important;
+div[data-testid="stHorizontalBlock"]:has(input) {{
+    background: linear-gradient(180deg, rgba(42, 4, 4, 0.92) 0%, rgba(20, 2, 2, 0.96) 100%) !important;
+    border: 1.2px solid rgba(185, 28, 28, 0.35) !important;
     border-radius: 999px !important;
-    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.75), inset 0 1px 1px rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 52, 52, 0.15) !important;
     backdrop-filter: blur(18px) !important;
-    padding: 0 18px 0 24px !important;
+    padding: 0 16px 0 24px !important;
     align-items: center !important;
-    height: 52px !important;
-    width: 100% !important;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+    height: 54px !important;
+    transition: all 0.25s ease !important;
 }}
 
-.search-pill-wrapper div[data-testid="stHorizontalBlock"]:focus-within {{
-    border-color: rgba(255, 52, 52, 0.65) !important;
-    box-shadow: 0 0 20px rgba(255, 52, 52, 0.25) !important;
+div[data-testid="stHorizontalBlock"]:has(input):focus-within {{
+    border-color: rgba(255, 52, 52, 0.75) !important;
+    box-shadow: 0 0 25px rgba(255, 52, 52, 0.28), inset 0 1px 0 rgba(255, 52, 52, 0.3) !important;
 }}
 
-/* تفريغ حقل النص الداخلي تماماً لمنع ظهور أي مستطيلات رمادية */
+/* تفريغ مدخل النص تماماً */
 div[data-testid="stTextInput"],
-div[data-testid="stTextInput"] div,
-div[data-testid="stTextInput"] div[data-baseweb="input"],
-div[data-testid="stTextInput"] div[data-baseweb="base-input"],
-div[data-testid="stTextInput"] input {{
+div[data-testid="stTextInput"] * {{
     background: transparent !important;
     background-color: transparent !important;
     border: none !important;
     box-shadow: none !important;
     outline: none !important;
-}}
-
-div[data-testid="stTextInput"] {{
-    margin: 0 !important;
-    padding: 0 !important;
-    height: 100% !important;
-}}
-
-div[data-testid="stTextInput"] input {{
     color: #ffffff !important;
-    height: 50px !important;
-    line-height: 50px !important;
+    height: 52px !important;
+    line-height: 52px !important;
     font-size: 0.95rem !important;
     padding: 0 !important;
     margin: 0 !important;
 }}
 
 div[data-testid="stTextInput"] input::placeholder {{
-    color: #71767f !important;
+    color: #9c7a7a !important;
 }}
 
-/* =====================================================
-   أيقونة الكاميرا: بدون أي دائرة ومفرغة تماماً مع تكبير عند الـ Hover
-   ===================================================== */
+/* الكاميرا */
 div[data-testid="stFileUploader"] {{
     background: transparent !important;
     border: none !important;
@@ -282,19 +266,13 @@ div[data-testid="stFileUploader"] {{
     padding: 0 !important;
     display: flex !important;
     align-items: center !important;
-    justify-content: flex-end !important;
-    height: 100% !important;
+    justify-content: center !important;
 }}
 
-div[data-testid="stFileUploader"] section {{
-    padding: 0 !important;
-    min-height: unset !important;
-    border: none !important;
-    background: transparent !important;
-}}
-
+div[data-testid="stFileUploader"] section,
 div[data-testid="stFileUploaderDropzone"] {{
     padding: 0 !important;
+    min-height: unset !important;
     border: none !important;
     background: transparent !important;
 }}
@@ -308,19 +286,18 @@ div[data-testid="stFileUploader"] button {{
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
-    border-radius: 0 !important;
     padding: 0 !important;
     margin: 0 !important;
     cursor: pointer !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease !important;
-    opacity: 0.8 !important;
+    transition: transform 0.2s ease, opacity 0.2s ease !important;
+    opacity: 0.85 !important;
 }}
 
 div[data-testid="stFileUploader"] button:hover {{
-    transform: scale(1.35) !important;
+    transform: scale(1.3) !important;
     background: transparent !important;
     opacity: 1 !important;
 }}
@@ -332,10 +309,7 @@ div[data-testid="stFileUploader"] button:before {{
 }}
 
 div[data-testid="stFileUploader"] button span,
-div[data-testid="stFileUploader"] button p {{
-    display: none !important;
-}}
-
+div[data-testid="stFileUploader"] button p,
 div[data-testid="stFileUploaderFile"] {{
     display: none !important;
 }}
@@ -544,11 +518,10 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-_, col_search, _ = st.columns([1, 2.8, 1])
+_, col_search, _ = st.columns([1, 2.6, 1])
 
 with col_search:
-    st.markdown('<div class="search-pill-wrapper">', unsafe_allow_html=True)
-    col_input, col_btn = st.columns([0.93, 0.07])
+    col_input, col_btn = st.columns([0.92, 0.08])
     with col_input:
         user_query = st.text_input(
             "Search",
@@ -561,7 +534,6 @@ with col_search:
             type=["jpg", "jpeg", "png"],
             label_visibility="collapsed"
         )
-    st.markdown('</div>', unsafe_allow_html=True)
 
 # ==============================================================================
 # 4. معالجة النتائج
