@@ -31,7 +31,7 @@ def get_image_data(image_path="background_car.png", mime="image/png"):
 BG_IMAGE = get_image_data("background_car.png", "image/png")
 
 # ==============================================================================
-# CSS: بار بحث واحد موحد بلون داكن والكاميرا جواه في نفس السطر
+# CSS: تفريغ اللون الرمادي بالكامل وسنترة أيقونة الكاميرا
 # ==============================================================================
 st.markdown(f"""
 <style>
@@ -212,7 +212,7 @@ html, body, [data-testid="stAppViewContainer"] {{
 }}
 
 /* =====================================================
-   بار البحث: شريط واحد فقط بدون أي مستطيلات رمادية داخلية
+   شريط البحث الموحد: بدون أي مستطيلات رمادية داخلية نهائياً
    ===================================================== */
 div[data-testid="stHorizontalBlock"] {{
     background: rgba(15, 18, 24, 0.88) !important;
@@ -220,46 +220,45 @@ div[data-testid="stHorizontalBlock"] {{
     border-radius: 999px !important;
     box-shadow: 0 16px 45px rgba(0, 0, 0, 0.6) !important;
     backdrop-filter: blur(16px) !important;
-    padding: 2px 8px 2px 20px !important;
+    padding: 3px 10px 3px 22px !important;
     align-items: center !important;
-    height: 54px !important;
+    height: 56px !important;
 }}
 
-/* إلغاء الرمادي الفاتح نهائياً وجعل كل الـ containers شفافة */
-[data-testid="stTextInput"],
-[data-testid="stTextInput"] > div,
-[data-testid="stTextInput"] [data-baseweb="base-input"],
-[data-testid="stTextInput"] [data-baseweb="input"] {{
+/* تفريغ كل الـ containers الداخلية لـ Streamlit وجعلها شفافة بالكامل */
+div[data-testid="stTextInput"],
+div[data-testid="stTextInput"] * {{
     background: transparent !important;
+    background-color: transparent !important;
     border: none !important;
     box-shadow: none !important;
-    padding: 0 !important;
+    outline: none !important;
+}}
+
+div[data-testid="stTextInput"] {{
     margin: 0 !important;
+    padding: 0 !important;
     height: 100% !important;
 }}
 
-[data-testid="stTextInput"] input {{
+div[data-testid="stTextInput"] input {{
     background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
+    background-color: transparent !important;
     color: #fff !important;
-    height: 48px !important;
-    font-size: 0.95rem !important;
+    height: 50px !important;
+    line-height: 50px !important;
+    font-size: 0.98rem !important;
     padding: 0 !important;
     margin: 0 !important;
+    border: none !important;
 }}
 
-[data-testid="stTextInput"] input:focus {{
-    outline: none !important;
-    box-shadow: none !important;
-}}
-
-[data-testid="stTextInput"] input::placeholder {{
+div[data-testid="stTextInput"] input::placeholder {{
     color: #838890 !important;
 }}
 
-/* زرار الكاميرا */
-[data-testid="stFileUploader"] {{
+/* زرار الكاميرا وسنترته التامة داخل الدائرة */
+div[data-testid="stFileUploader"] {{
     background: transparent !important;
     border: none !important;
     margin: 0 !important;
@@ -269,57 +268,73 @@ div[data-testid="stHorizontalBlock"] {{
     justify-content: center !important;
 }}
 
-[data-testid="stFileUploader"] section {{
+div[data-testid="stFileUploader"] section {{
     padding: 0 !important;
     min-height: unset !important;
     border: none !important;
     background: transparent !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }}
 
-[data-testid="stFileUploaderDropzone"] {{
+div[data-testid="stFileUploaderDropzone"] {{
     padding: 0 !important;
     border: none !important;
     background: transparent !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }}
 
-[data-testid="stFileUploaderDropzoneInstructions"],
-[data-testid="stFileUploaderDropzone"] > div:not(:has(button)) {{
+div[data-testid="stFileUploaderDropzoneInstructions"],
+div[data-testid="stFileUploaderDropzone"] > div:not(:has(button)) {{
     display: none !important;
 }}
 
-[data-testid="stFileUploader"] button {{
-    width: 36px !important;
-    height: 36px !important;
+div[data-testid="stFileUploader"] button {{
+    width: 38px !important;
+    height: 38px !important;
     border-radius: 50% !important;
     background: rgba(26, 30, 38, 0.95) !important;
     border: 1px solid rgba(255, 52, 52, 0.45) !important;
     padding: 0 !important;
+    margin: 0 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    color: #fff !important;
+    text-align: center !important;
     cursor: pointer !important;
     transition: all .2s ease !important;
+    position: relative !important;
 }}
 
-[data-testid="stFileUploader"] button:hover {{
+div[data-testid="stFileUploader"] button:hover {{
     transform: scale(1.06) !important;
     background: rgba(255, 52, 52, 0.25) !important;
     border-color: var(--red) !important;
 }}
 
-[data-testid="stFileUploader"] button:before {{
+/* سنترة الأيقونة في المنتصف رأسياً وأفقياً بدقة */
+div[data-testid="stFileUploader"] button:before {{
     content: "📷";
-    font-size: 1rem;
-    line-height: 1;
+    font-size: 1.05rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    line-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }}
 
-[data-testid="stFileUploader"] button span,
-[data-testid="stFileUploader"] button p {{
+div[data-testid="stFileUploader"] button span,
+div[data-testid="stFileUploader"] button p {{
     display: none !important;
 }}
 
-[data-testid="stFileUploaderFile"] {{
+div[data-testid="stFileUploaderFile"] {{
     display: none !important;
 }}
 
