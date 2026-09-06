@@ -12,173 +12,222 @@ from sklearn.metrics.pairwise import cosine_similarity
 from transformers import AutoImageProcessor, AutoModelForImageClassification
 
 st.set_page_config(
-    page_title="Apex Motors | دور على عربيتك",
-    page_icon="🚗",
+    page_title="APEX MOTORS | Next-Gen AI Valuation",
+    page_icon="⚡",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
 # ==============================================================================
-# CSS: شريط بحث مدمج في المنتصف مع أيقونة الكاميرا بالداخل
+# LUXURY SHOWROOM UI & VISUAL ASSETS
 # ==============================================================================
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@500;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cairo:wght@600;700;900&display=swap');
 
     .stApp {
-        background: radial-gradient(130% 100% at 50% -10%, #0d1b2a 0%, #060d17 60%, #020509 100%);
+        background: radial-gradient(120% 90% at 50% -10%, #0d1e3a 0%, #050b14 60%, #020408 100%);
         color: #f8fafc;
-        font-family: 'Cairo', 'Plus Jakarta Sans', sans-serif;
+        font-family: 'Plus Jakarta Sans', 'Cairo', sans-serif;
     }
 
-    /* العنوان الرئيسي في المنتصف */
-    .hero-box {
+    /* Hero Header */
+    .hero-container {
         text-align: center;
-        padding: 55px 15px 25px 15px;
+        padding: 40px 15px 15px 15px;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(14, 165, 233, 0.12);
+        border: 1px solid rgba(56, 189, 248, 0.4);
+        color: #38bdf8;
+        padding: 6px 18px;
+        border-radius: 9999px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 14px;
+        box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
     }
     .hero-title {
-        font-size: 2.8rem;
-        font-weight: 800;
-        background: linear-gradient(90deg, #38bdf8, #818cf8, #c084fc);
+        font-size: 3.2rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, #ffffff 0%, #bae6fd 50%, #38bdf8 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin-bottom: 6px;
+        letter-spacing: -0.02em;
+        margin: 0;
+        line-height: 1.15;
     }
     .hero-subtitle {
         color: #94a3b8;
-        font-size: 1.05rem;
+        font-size: 1.15rem;
+        margin-top: 10px;
+        font-weight: 400;
     }
 
-    /* شريط البحث الموحد */
-    [data-testid="stTextInput"] input {
-        background: rgba(15, 23, 42, 0.9) !important;
-        border: 1.5px solid rgba(56, 189, 248, 0.35) !important;
+    /* Unified Glass Search Bar */
+    .unified-search-box {
+        position: relative;
+        max-width: 780px;
+        margin: 25px auto 35px auto;
+    }
+    .unified-search-box [data-testid="stTextInput"] input {
+        background: rgba(15, 23, 42, 0.85) !important;
+        border: 1.8px solid rgba(56, 189, 248, 0.35) !important;
         color: #ffffff !important;
-        border-radius: 40px !important;
-        height: 60px !important;
-        padding-left: 25px !important;
-        padding-right: 65px !important;
-        font-size: 1.1rem !important;
-        box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6) !important;
+        border-radius: 45px !important;
+        height: 64px !important;
+        padding-left: 28px !important;
+        padding-right: 70px !important;
+        font-size: 1.15rem !important;
+        box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.7), inset 0 0 15px rgba(56, 189, 248, 0.05) !important;
         transition: all 0.3s ease !important;
         direction: rtl;
         text-align: right;
     }
-    [data-testid="stTextInput"] input:focus {
+    .unified-search-box [data-testid="stTextInput"] input:focus {
         border-color: #38bdf8 !important;
-        box-shadow: 0 0 25px rgba(56, 189, 248, 0.45) !important;
+        box-shadow: 0 0 35px rgba(56, 189, 248, 0.5) !important;
     }
 
-    /* رفع زرار الصورة ليدخل جوه شريط البحث كأيقونة */
-    [data-testid="stFileUploader"] {
-        margin-top: -60px !important;
-        height: 60px !important;
+    /* Embedded Camera Icon */
+    .unified-search-box [data-testid="stFileUploader"] {
+        margin-top: -64px !important;
+        height: 64px !important;
         display: flex !important;
         justify-content: flex-end !important;
         align-items: center !important;
-        padding-right: 18px !important;
+        padding-right: 20px !important;
         pointer-events: none !important;
         border: none !important;
         background: transparent !important;
     }
-    [data-testid="stFileUploader"] section {
+    .unified-search-box [data-testid="stFileUploader"] section {
         padding: 0 !important;
         min-height: unset !important;
         border: none !important;
         background: transparent !important;
         pointer-events: auto !important;
     }
-    [data-testid="stFileUploaderDropzone"] {
+    .unified-search-box [data-testid="stFileUploaderDropzone"] {
         padding: 0 !important;
         border: none !important;
         background: transparent !important;
     }
-    [data-testid="stFileUploaderDropzoneInstructions"],
-    [data-testid="stFileUploaderDropzone"] > div:not(:has(button)) {
+    .unified-search-box [data-testid="stFileUploaderDropzoneInstructions"],
+    .unified-search-box [data-testid="stFileUploaderDropzone"] > div:not(:has(button)) {
         display: none !important;
     }
-
-    /* تحويل الزرار لأيقونة كاميرا نيون */
-    [data-testid="stFileUploader"] button {
+    .unified-search-box [data-testid="stFileUploader"] button {
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
         padding: 4px !important;
-        cursor: pointer !important;
         color: #38bdf8 !important;
         transition: transform 0.2s ease !important;
     }
-    [data-testid="stFileUploader"] button:hover {
-        transform: scale(1.2);
+    .unified-search-box [data-testid="stFileUploader"] button:hover {
+        transform: scale(1.25);
     }
-    [data-testid="stFileUploader"] button::before {
+    .unified-search-box [data-testid="stFileUploader"] button::before {
         content: "📷";
-        font-size: 1.45rem;
+        font-size: 1.5rem;
     }
-    [data-testid="stFileUploader"] button span,
-    [data-testid="stFileUploader"] button p {
+    .unified-search-box [data-testid="stFileUploader"] button span,
+    .unified-search-box [data-testid="stFileUploader"] button p {
         display: none !important;
     }
 
-    /* اسم الملف بعد الرفع */
-    [data-testid="stFileUploaderFile"] {
-        margin-top: 15px !important;
-        background: rgba(15, 23, 42, 0.85) !important;
-        border: 1px solid rgba(56, 189, 248, 0.3) !important;
-        border-radius: 12px !important;
-        pointer-events: auto !important;
+    /* Showcase Vehicle Cards */
+    .showroom-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+        gap: 24px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding-bottom: 50px;
+    }
+    .car-card-modern {
+        background: linear-gradient(180deg, rgba(17, 27, 46, 0.85) 0%, rgba(10, 16, 28, 0.95) 100%);
+        border: 1px solid rgba(56, 189, 248, 0.22);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.65);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        display: flex;
+        flex-direction: column;
+    }
+    .car-card-modern:hover {
+        border-color: rgba(56, 189, 248, 0.65);
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px -10px rgba(14, 165, 233, 0.25);
+    }
+    .car-image-container {
+        width: 100%;
+        height: 200px;
+        background: #09121d;
+        overflow: hidden;
+        position: relative;
+    }
+    .car-image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
+    .car-card-modern:hover .car-image-container img {
+        transform: scale(1.06);
+    }
+    .car-details {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        flex-grow: 1;
     }
 
-    /* كروت النتائج */
-    .car-card {
-        background: rgba(15, 23, 42, 0.75);
-        border: 1px solid rgba(56, 189, 248, 0.2);
-        border-radius: 16px;
-        padding: 22px;
-        margin-bottom: 16px;
-        transition: all 0.2s ease;
-        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
-    }
-    .car-card:hover {
-        border-color: rgba(56, 189, 248, 0.6);
-        transform: translateY(-2px);
-    }
-
+    /* Badges */
     .deal-badge-great {
         background: rgba(34, 197, 94, 0.15);
         border: 1px solid #22c55e;
         color: #4ade80;
         font-weight: 700;
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-size: 0.85rem;
+        padding: 5px 12px;
+        border-radius: 9999px;
+        font-size: 0.8rem;
     }
     .deal-badge-overpriced {
         background: rgba(239, 68, 68, 0.15);
         border: 1px solid #ef4444;
         color: #f87171;
         font-weight: 700;
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-size: 0.85rem;
+        padding: 5px 12px;
+        border-radius: 9999px;
+        font-size: 0.8rem;
     }
     .deal-badge-fair {
         background: rgba(234, 179, 8, 0.15);
         border: 1px solid #eab308;
         color: #facc15;
         font-weight: 700;
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-size: 0.85rem;
+        padding: 5px 12px;
+        border-radius: 9999px;
+        font-size: 0.8rem;
     }
 </style>
 """, unsafe_allow_html=True)
 
 # ==============================================================================
-# 1. تحميل النماذج والبيانات
+# 1. LOAD MODELS & ASSETS
 # ==============================================================================
 @st.cache_resource(show_spinner=False)
-def load_all():
+def load_core_systems():
     device = "cuda" if torch.cuda.is_available() else "cpu"
     df_data = pd.read_csv("hatla2ee_cleaned_data.csv")
     for col in ["brand", "model", "location", "search_text"]:
@@ -206,19 +255,23 @@ def load_all():
 
 try:
     (device, df_recommend, full_pricing_pipeline, tfidf, tfidf_matrix,
-     st_model, car_text_embeddings, img_processor, car_vision_model) = load_all()
+     st_model, car_text_embeddings, img_processor, car_vision_model) = load_core_systems()
 except Exception as e:
     st.error(f"⚠️ خطأ في تحميل ملفات المشروع: {e}")
     st.stop()
 
 # ==============================================================================
-# 2. دوال المعالجة والـ NLP
+# 2. HELPER FUNCTIONS & IMAGE MAPPING
 # ==============================================================================
 CITY_MAP = {
     "القاهرة": "cairo", "cairo": "cairo", "اسكندرية": "alexandria", "إسكندرية": "alexandria",
     "التجمع": "tagamo3", "تجمع": "tagamo3", "مدينة نصر": "nasr city", "الجيزة": "giza",
     "زايد": "zayed", "اكتوبر": "october", "كفر الدوار": "kafr el-dawwar", "المنصورة": "mansoura"
 }
+
+def get_car_image_url(brand, model):
+    query = f"{brand} {model}".strip()
+    return f"https://source.unsplash.com/featured/800x500/?car,{query}"
 
 def normalize_text(text):
     text = unicodedata.normalize("NFKC", text.lower())
@@ -229,10 +282,10 @@ def extract_budget(text):
         if unit in ("m", "مليون"): return v * 1_000_000
         if unit in ("k", "الف", "ألف"): return v * 1_000
         return v
-    m = re.search(r'(?:من\s*)?(\d+(?:\.\d+)?)\s*(m|مليون|k|الف|ألف)?\s*(?:-|to|حتى|لحد|الى|إلى|لـ)\s*(\d+(?:\.\d+)?)\s*(m|مليون|k|الف|ألف)?', text)
+    m = re.search(r'(?:من\s*)?(\\d+(?:\\.\\d+)?)\\s*(m|مليون|k|الف|ألف)?\\s*(?:-|to|حتى|لحد|الى|إلى|لـ)\\s*(\\d+(?:\\.\\d+)?)\\s*(m|مليون|k|الف|ألف)?', text)
     if m:
         return scale(float(m.group(1)), m.group(2)), scale(float(m.group(3)), m.group(4))
-    m = re.search(r'(?:under|below|less than|حتى|لحد|اقل من|أقل من|تحت)\s*(\d+(?:\.\d+)?)\s*(m|مليون|k|الف|ألف)?', text)
+    m = re.search(r'(?:under|below|less than|حتى|لحد|اقل من|أقل من|تحت)\\s*(\\d+(?:\\.\\d+)?)\\s*(m|مليون|k|الف|ألف)?', text)
     if m:
         return None, scale(float(m.group(1)), m.group(2))
     return None, None
@@ -273,32 +326,32 @@ def predict_vision_top5(image_pil, top_k=5):
             for p, idx in zip(top_probs, top_indices)]
 
 # ==============================================================================
-# 3. واجهة البحث في المنتصف تماماً
+# 3. INTERACTIVE HERO & INTEGRATED SEARCH
 # ==============================================================================
 st.markdown("""
-<div class="hero-box">
-    <div class="hero-title">Apex Motors</div>
-    <div class="hero-subtitle">محرك البحث الذكي وتقييم أسعار السيارات في السوق المصري</div>
+<div class="hero-container">
+    <div class="hero-badge">⚡ End-to-End Multimodal AI</div>
+    <h1 class="hero-title">APEX MOTORS</h1>
+    <p class="hero-subtitle">محرك البحث الذكي وتقييم الأسعار العادلة للسيارات في السوق المصري</p>
 </div>
 """, unsafe_allow_html=True)
 
-# ضبط الشريط في منتصف الشاشة بدقة
-_, col_search, _ = st.columns([1, 2.6, 1])
-
-with col_search:
-    user_query = st.text_input(
-        "Search",
-        placeholder="اكتب مواصفات العربية واضغط Enter...",
-        label_visibility="collapsed"
-    )
-    uploaded_file = st.file_uploader(
-        "Upload",
-        type=["jpg", "jpeg", "png"],
-        label_visibility="collapsed"
-    )
+# شريط البحث المتكامل
+st.markdown('<div class="unified-search-box">', unsafe_allow_html=True)
+user_query = st.text_input(
+    "Search",
+    placeholder="اكتب مواصفات العربية (مثال: كيا سبورتاج في القاهرة أقل من مليون ونصف)...",
+    label_visibility="collapsed"
+)
+uploaded_file = st.file_uploader(
+    "Upload",
+    type=["jpg", "jpeg", "png"],
+    label_visibility="collapsed"
+)
+st.markdown('</div>', unsafe_allow_html=True)
 
 # ==============================================================================
-# 4. استخراج النتائج عند الضغط على Enter أو رفع صورة
+# 4. INSTANT AUTO EXECUTION & VALUATION
 # ==============================================================================
 has_query = bool(user_query.strip())
 has_image = uploaded_file is not None
@@ -320,12 +373,12 @@ if has_query or has_image:
         try:
             pil_img = Image.open(uploaded_file)
             preds = predict_vision_top5(pil_img)
+            top_pred = preds[0]
             
-            top_car_label = preds[0]['label']
             st.markdown(f"""
-            <div style="text-align: center; margin-top: 15px; margin-bottom: 20px;">
-                <span style="background: rgba(56, 189, 248, 0.15); border: 1px solid #38bdf8; color: #bae6fd; padding: 6px 18px; border-radius: 20px; font-size: 0.95rem;">
-                    📷 تم التعرف على السيارة: <strong>{top_car_label}</strong> ({preds[0]['confidence']*100:.1f}%)
+            <div style="text-align: center; margin-bottom: 25px;">
+                <span style="background: rgba(56, 189, 248, 0.15); border: 1px solid #38bdf8; color: #bae6fd; padding: 8px 22px; border-radius: 30px; font-weight: 700; font-size: 1rem;">
+                    📷 طراز السيارة المكتشف: {top_pred['label']} ({top_pred['confidence']*100:.1f}%)
                 </span>
             </div>
             """, unsafe_allow_html=True)
@@ -342,7 +395,7 @@ if has_query or has_image:
                     if not subset.empty:
                         subset["vision_confidence"] = p["confidence"]
                         matched_rows = pd.concat([matched_rows, subset])
-                
+
                 dedup_cols = [c for c in ["brand", "model", "year"] if c in matched_rows.columns]
                 if not matched_rows.empty and dedup_cols:
                     sub_df = matched_rows.drop_duplicates(subset=dedup_cols).copy()
@@ -372,7 +425,7 @@ if has_query or has_image:
 
     top_results = sub_df.sort_values("match_score", ascending=False).head(6).copy()
 
-    # التثمين الآمن
+    # التثمين
     try:
         pred_features = list(full_pricing_pipeline.feature_names_in_)
     except AttributeError:
@@ -395,59 +448,73 @@ if has_query or has_image:
         default="Fair Price"
     )
 
-    _, col_results, _ = st.columns([1, 2.6, 1])
-    with col_results:
-        st.write("### أفضل النتائج المطابقة:")
+    # عرض كروت السيارات بصور حقيقية
+    st.markdown("""
+    <div style="max-width: 1200px; margin: 0 auto 20px auto; display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="margin: 0; font-size: 1.5rem; font-weight: 700;">🏁 أفضل السيارات المتاحة المطابقة:</h3>
+        <span style="color: #94a3b8; font-size: 0.95rem;">مرتبة بدقة التوافق الدلالي والتسعير العادل</span>
+    </div>
+    """, unsafe_allow_html=True)
 
-        for _, row in top_results.iterrows():
-            b_name = row.get("brand", "")
-            m_name = row.get("model", "")
-            y_val = int(row.get("year", 0)) if pd.notna(row.get("year")) and row.get("year") != 0 else ""
-            price_val = int(row.get("price", 0)) if pd.notna(row.get("price")) else 0
-            fair_val = int(row.get("predicted_fair_price", 0)) if pd.notna(row.get("predicted_fair_price")) else 0
-            deal_tag = row.get("deal_label", "Fair Price")
-            loc_val = row.get("location", "مصر")
-            item_link = row.get("item_url", "#")
+    cards_html = '<div class="showroom-grid">'
+    for _, row in top_results.iterrows():
+        b_name = row.get("brand", "")
+        m_name = row.get("model", "")
+        y_val = int(row.get("year", 0)) if pd.notna(row.get("year")) and row.get("year") != 0 else ""
+        price_val = int(row.get("price", 0)) if pd.notna(row.get("price")) else 0
+        fair_val = int(row.get("predicted_fair_price", 0)) if pd.notna(row.get("predicted_fair_price")) else 0
+        deal_tag = row.get("deal_label", "Fair Price")
+        loc_val = row.get("location", "مصر")
+        trans_val = row.get("transmission", "Automatic")
+        item_link = row.get("item_url", "#")
+        img_url = get_car_image_url(b_name, m_name)
 
-            if deal_tag == "Great Deal":
-                badge_html = '<span class="deal-badge-great">🟢 لقطة (سعر ممتاز)</span>'
-            elif deal_tag == "Overpriced":
-                badge_html = '<span class="deal-badge-overpriced">🔴 سعر مبالغ فيه</span>'
-            else:
-                badge_html = '<span class="deal-badge-fair">🟡 سعر عادل</span>'
+        if deal_tag == "Great Deal":
+            badge_html = '<span class="deal-badge-great">🟢 صفقة لقطة</span>'
+        elif deal_tag == "Overpriced":
+            badge_html = '<span class="deal-badge-overpriced">🔴 سعر أعلى من السوق</span>'
+        else:
+            badge_html = '<span class="deal-badge-fair">🟡 سعر عادل</span>'
 
-            st.markdown(f"""
-            <div class="car-card">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 1.35rem; font-weight: 700; color: #ffffff;">
-                        {b_name} {m_name} <span style="color: #38bdf8;">{y_val}</span>
-                    </span>
-                    <div>{badge_html}</div>
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; flex-wrap: wrap; gap: 10px;">
+        cards_html += f"""
+        <div class="car-card-modern">
+            <div class="car-image-container">
+                <img src="{img_url}" alt="{b_name} {m_name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800';"/>
+            </div>
+            <div class="car-details">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                     <div>
-                        <span style="color: #94a3b8; font-size: 0.85rem;">السعر المعروض:</span><br>
+                        <h4 style="margin: 0; font-size: 1.3rem; font-weight: 800; color: #ffffff;">{b_name} {m_name}</h4>
+                        <span style="color: #38bdf8; font-weight: 600; font-size: 0.95rem;">موديل {y_val}</span>
+                    </div>
+                    {badge_html}
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: baseline; background: rgba(3, 7, 18, 0.5); padding: 12px 14px; border-radius: 12px; margin-top: 5px;">
+                    <div>
+                        <span style="color: #94a3b8; font-size: 0.8rem; display: block;">السعر المعروض</span>
                         <strong style="color: #ffffff; font-size: 1.25rem;">{price_val:,.0f} EGP</strong>
                     </div>
-                    <div>
-                        <span style="color: #94a3b8; font-size: 0.85rem;">السعر العادل المقدر:</span><br>
+                    <div style="text-align: right;">
+                        <span style="color: #94a3b8; font-size: 0.8rem; display: block;">السعر العادل المقدر</span>
                         <strong style="color: #38bdf8; font-size: 1.25rem;">{fair_val:,.0f} EGP</strong>
                     </div>
-                    <div>
-                        <span style="color: #94a3b8; font-size: 0.85rem;">المحافظة:</span><br>
-                        <span style="color: #cbd5e1; font-size: 1.05rem;">📍 {loc_val}</span>
-                    </div>
-                    <div>
-                        <a href="{item_link}" target="_blank" style="display: inline-block; background: rgba(56, 189, 248, 0.15); border: 1px solid #38bdf8; color: #38bdf8; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 0.95rem;">
-                            معاينة الإعلان ↗
-                        </a>
-                    </div>
                 </div>
+                <div style="display: flex; justify-content: space-between; color: #94a3b8; font-size: 0.9rem; margin-top: 4px;">
+                    <span>📍 {loc_val}</span>
+                    <span>⚙️ {trans_val}</span>
+                </div>
+                <a href="{item_link}" target="_blank" style="display: block; text-align: center; background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #ffffff; padding: 10px; border-radius: 10px; font-weight: 700; text-decoration: none; margin-top: 6px; box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);">
+                    عرض تفاصيل الإعلان ↗
+                </a>
             </div>
-            """, unsafe_allow_html=True)
+        </div>
+        """
+    cards_html += '</div>'
+    st.markdown(cards_html, unsafe_allow_html=True)
 else:
     st.markdown("""
-    <div style="text-align: center; color: #64748b; margin-top: 30px;">
-        <p style="font-size: 1.05rem;">اكتب مواصفات العربية واضغط <strong>Enter</strong> مباشرة، أو اضغط على أيقونة الكاميرا 📷 لرفع صورة عربية</p>
+    <div style="text-align: center; color: #64748b; margin-top: 40px;">
+        <p style="font-size: 1.15rem; margin-bottom: 6px;">💡 اكتب مواصفات العربية واضغط <strong>Enter</strong> مباشرة</p>
+        <p style="font-size: 0.95rem;">أو اضغط على أيقونة الكاميرا 📷 داخل شريط البحث للبحث بصورة عربية</p>
     </div>
     """, unsafe_allow_html=True)
