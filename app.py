@@ -31,7 +31,7 @@ def get_image_data(image_path="background_car.png", mime="image/png"):
 BG_IMAGE = get_image_data("background_car.png", "image/png")
 
 # ==============================================================================
-# CSS: كبسولة بحث مطابقة للصورة تماماً
+# CSS: كبسولة واحدة موحدة بالملي، إزالة الدائرة، وتكبير الكاميرا on hover
 # ==============================================================================
 st.markdown(f"""
 <style>
@@ -212,62 +212,68 @@ html, body, [data-testid="stAppViewContainer"] {{
 }}
 
 /* =====================================================
-   كبسولة البحث: مطابقة لشكل الصورة
+   شريط البحث: كبسولة واحدة حقيقية بدون أي طبقات داخلية
    ===================================================== */
 div[data-testid="stHorizontalBlock"] {{
-    background: rgba(18, 22, 29, 0.72) !important;
+    background: rgba(18, 22, 29, 0.78) !important;
     border: 1px solid rgba(255, 255, 255, 0.16) !important;
     border-radius: 999px !important;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), inset 0 1px 1px rgba(255, 255, 255, 0.08) !important;
     backdrop-filter: blur(20px) !important;
-    padding: 4px 10px 4px 24px !important;
+    padding: 0 16px 0 24px !important;
     align-items: center !important;
-    height: 54px !important;
+    height: 52px !important;
     max-width: 740px !important;
     margin: 0 auto !important;
 }}
 
-/* تفريغ المستطيل الرمادي نهائياً وجعل كل الطبقات شفافة */
+/* إلغاء حدود وخلفيات وأبعاد أي عناصر داخلية ليبقى البار واحد فقط */
 div[data-testid="stTextInput"],
-div[data-testid="stTextInput"] * {{
+div[data-testid="stTextInput"] > div,
+div[data-testid="stTextInput"] [data-baseweb="base-input"],
+div[data-testid="stTextInput"] [data-baseweb="input"] {{
     background: transparent !important;
     background-color: transparent !important;
     border: none !important;
     box-shadow: none !important;
     outline: none !important;
-}}
-
-div[data-testid="stTextInput"] {{
-    margin: 0 !important;
     padding: 0 !important;
+    margin: 0 !important;
     height: 100% !important;
+    width: 100% !important;
 }}
 
 div[data-testid="stTextInput"] input {{
     background: transparent !important;
     background-color: transparent !important;
     color: #ffffff !important;
-    height: 46px !important;
-    line-height: 46px !important;
+    height: 52px !important;
+    line-height: 52px !important;
     font-size: 0.95rem !important;
     padding: 0 !important;
     margin: 0 !important;
     border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
 }}
 
 div[data-testid="stTextInput"] input::placeholder {{
     color: #71767f !important;
 }}
 
-/* زرار الكاميرا: دائرة داكنة صغيرة مدمجة على اليمين */
+/* =====================================================
+   أيقونة الكاميرا: إزالة الدائرة تماماً وتكبير on hover
+   ===================================================== */
 div[data-testid="stFileUploader"] {{
     background: transparent !important;
     border: none !important;
+    box-shadow: none !important;
     margin: 0 !important;
     padding: 0 !important;
     display: flex !important;
     align-items: center !important;
-    justify-content: flex-end !important;
+    justify-content: center !important;
+    height: 52px !important;
 }}
 
 div[data-testid="stFileUploader"] section {{
@@ -288,31 +294,35 @@ div[data-testid="stFileUploaderDropzone"] > div:not(:has(button)) {{
     display: none !important;
 }}
 
+/* إزالة الدائرة والخلفيات بالكامل */
 div[data-testid="stFileUploader"] button {{
-    width: 38px !important;
-    height: 38px !important;
-    border-radius: 50% !important;
-    background: rgba(28, 32, 40, 0.85) !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
     padding: 0 !important;
     margin: 0 !important;
+    width: 32px !important;
+    height: 32px !important;
+    cursor: pointer !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    cursor: pointer !important;
-    transition: all .2s ease !important;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease !important;
+    opacity: 0.85 !important;
 }}
 
+/* تكبير الكاميرا عند الـ Hover */
 div[data-testid="stFileUploader"] button:hover {{
-    transform: scale(1.08) !important;
-    border-color: rgba(255, 255, 255, 0.3) !important;
-    background: rgba(35, 40, 50, 0.95) !important;
+    transform: scale(1.35) !important;
+    background: transparent !important;
+    border: none !important;
+    opacity: 1 !important;
 }}
 
 div[data-testid="stFileUploader"] button:before {{
     content: "📷";
-    font-size: 1.05rem;
+    font-size: 1.25rem;
     line-height: 1 !important;
     display: flex;
     align-items: center;
@@ -535,7 +545,7 @@ st.markdown("""
 _, col_search, _ = st.columns([1, 2.8, 1])
 
 with col_search:
-    col_input, col_btn = st.columns([0.92, 0.08])
+    col_input, col_btn = st.columns([0.94, 0.06])
     with col_input:
         user_query = st.text_input(
             "Search",
