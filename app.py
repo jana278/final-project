@@ -31,7 +31,7 @@ def get_image_data(image_path="background_car.png", mime="image/png"):
 BG_IMAGE = get_image_data("background_car.png", "image/png")
 
 # ==============================================================================
-# CSS: شريط بحث مدمج بزر الكاميرا بدون أي نزول أو تشوه
+# CSS: بار بحث واحد موحد بلون داكن والكاميرا جواه في نفس السطر
 # ==============================================================================
 st.markdown(f"""
 <style>
@@ -212,36 +212,30 @@ html, body, [data-testid="stAppViewContainer"] {{
 }}
 
 /* =====================================================
-   شريط البحث الموحد (دمج الأعمدة مع بعض بالملّي)
+   بار البحث: شريط واحد فقط بدون أي مستطيلات رمادية داخلية
    ===================================================== */
-[data-testid="stHorizontalBlock"] {{
-    background: rgba(14, 18, 24, 0.85) !important;
-    border: 1.2px solid rgba(255, 255, 255, 0.22) !important;
+div[data-testid="stHorizontalBlock"] {{
+    background: rgba(15, 18, 24, 0.88) !important;
+    border: 1px solid rgba(255, 255, 255, 0.22) !important;
     border-radius: 999px !important;
     box-shadow: 0 16px 45px rgba(0, 0, 0, 0.6) !important;
     backdrop-filter: blur(16px) !important;
-    padding: 4px 8px 4px 18px !important;
+    padding: 2px 8px 2px 20px !important;
     align-items: center !important;
-    gap: 0 !important;
+    height: 54px !important;
 }}
 
-/* تفريغ الـ Input بالكامل داخل الشريط */
-[data-testid="stTextInput"] {{
-    margin: 0 !important;
-    padding: 0 !important;
-}}
-
-[data-testid="stTextInput"] > div {{
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-}}
-
+/* إلغاء الرمادي الفاتح نهائياً وجعل كل الـ containers شفافة */
+[data-testid="stTextInput"],
+[data-testid="stTextInput"] > div,
 [data-testid="stTextInput"] [data-baseweb="base-input"],
 [data-testid="stTextInput"] [data-baseweb="input"] {{
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 100% !important;
 }}
 
 [data-testid="stTextInput"] input {{
@@ -250,8 +244,9 @@ html, body, [data-testid="stAppViewContainer"] {{
     box-shadow: none !important;
     color: #fff !important;
     height: 48px !important;
-    font-size: 1rem !important;
+    font-size: 0.95rem !important;
     padding: 0 !important;
+    margin: 0 !important;
 }}
 
 [data-testid="stTextInput"] input:focus {{
@@ -260,16 +255,18 @@ html, body, [data-testid="stAppViewContainer"] {{
 }}
 
 [data-testid="stTextInput"] input::placeholder {{
-    color: #8b929a !important;
+    color: #838890 !important;
 }}
 
-/* زرار الكاميرا في نفس السطر */
+/* زرار الكاميرا */
 [data-testid="stFileUploader"] {{
+    background: transparent !important;
+    border: none !important;
     margin: 0 !important;
     padding: 0 !important;
     display: flex !important;
-    justify-content: flex-end !important;
     align-items: center !important;
+    justify-content: center !important;
 }}
 
 [data-testid="stFileUploader"] section {{
@@ -291,11 +288,11 @@ html, body, [data-testid="stAppViewContainer"] {{
 }}
 
 [data-testid="stFileUploader"] button {{
-    width: 40px !important;
-    height: 40px !important;
+    width: 36px !important;
+    height: 36px !important;
     border-radius: 50% !important;
-    background: rgba(25, 27, 32, 0.9) !important;
-    border: 1px solid rgba(255, 52, 52, 0.5) !important;
+    background: rgba(26, 30, 38, 0.95) !important;
+    border: 1px solid rgba(255, 52, 52, 0.45) !important;
     padding: 0 !important;
     display: flex !important;
     align-items: center !important;
@@ -313,7 +310,7 @@ html, body, [data-testid="stAppViewContainer"] {{
 
 [data-testid="stFileUploader"] button:before {{
     content: "📷";
-    font-size: 1.05rem;
+    font-size: 1rem;
     line-height: 1;
 }}
 
@@ -323,10 +320,7 @@ html, body, [data-testid="stAppViewContainer"] {{
 }}
 
 [data-testid="stFileUploaderFile"] {{
-    margin-top: 14px !important;
-    background: rgba(5,5,6,.90) !important;
-    border: 1px solid rgba(255,255,255,.15) !important;
-    border-radius: 12px !important;
+    display: none !important;
 }}
 
 /* Cards & Badges */
@@ -511,7 +505,7 @@ def predict_vision_top5(image_pil, top_k=5):
             for p, idx in zip(top_probs, top_indices)]
 
 # ==============================================================================
-# 3. واجهة البحث (الأعمدة تضمن تواجدهم في نفس السطر)
+# 3. واجهة البحث
 # ==============================================================================
 st.markdown("""
 <div class="hero-box">
@@ -536,8 +530,7 @@ st.markdown("""
 _, col_search, _ = st.columns([1, 2.6, 1])
 
 with col_search:
-    # تقسيم مدخل النص وزر الكاميرا في نفس السطر بجوار بعض
-    col_input, col_btn = st.columns([0.88, 0.12])
+    col_input, col_btn = st.columns([0.91, 0.09])
     with col_input:
         user_query = st.text_input(
             "Search",
