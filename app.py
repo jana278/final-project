@@ -31,7 +31,7 @@ def get_image_data(image_path="background_car.png", mime="image/png"):
 BG_IMAGE = get_image_data("background_car.png", "image/png")
 
 # ==============================================================================
-# CSS: تفريغ اللون الرمادي بالكامل وسنترة أيقونة الكاميرا
+# CSS: شريط بحث مفرغ وأيقونة كاميرا حرة بدون أي دوائر
 # ==============================================================================
 st.markdown(f"""
 <style>
@@ -212,7 +212,7 @@ html, body, [data-testid="stAppViewContainer"] {{
 }}
 
 /* =====================================================
-   شريط البحث الموحد: بدون أي مستطيلات رمادية داخلية نهائياً
+   شريط البحث: مظهر داكن موحد
    ===================================================== */
 div[data-testid="stHorizontalBlock"] {{
     background: rgba(15, 18, 24, 0.88) !important;
@@ -220,12 +220,11 @@ div[data-testid="stHorizontalBlock"] {{
     border-radius: 999px !important;
     box-shadow: 0 16px 45px rgba(0, 0, 0, 0.6) !important;
     backdrop-filter: blur(16px) !important;
-    padding: 3px 10px 3px 22px !important;
+    padding: 3px 12px 3px 22px !important;
     align-items: center !important;
     height: 56px !important;
 }}
 
-/* تفريغ كل الـ containers الداخلية لـ Streamlit وجعلها شفافة بالكامل */
 div[data-testid="stTextInput"],
 div[data-testid="stTextInput"] * {{
     background: transparent !important;
@@ -257,7 +256,9 @@ div[data-testid="stTextInput"] input::placeholder {{
     color: #838890 !important;
 }}
 
-/* زرار الكاميرا وسنترته التامة داخل الدائرة */
+/* =====================================================
+   أيقونة الكاميرا: إزالة الدائرة والحدود نهائياً
+   ===================================================== */
 div[data-testid="stFileUploader"] {{
     background: transparent !important;
     border: none !important;
@@ -273,18 +274,12 @@ div[data-testid="stFileUploader"] section {{
     min-height: unset !important;
     border: none !important;
     background: transparent !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
 }}
 
 div[data-testid="stFileUploaderDropzone"] {{
     padding: 0 !important;
     border: none !important;
     background: transparent !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
 }}
 
 div[data-testid="stFileUploaderDropzoneInstructions"],
@@ -293,40 +288,32 @@ div[data-testid="stFileUploaderDropzone"] > div:not(:has(button)) {{
 }}
 
 div[data-testid="stFileUploader"] button {{
-    width: 38px !important;
-    height: 38px !important;
-    border-radius: 50% !important;
-    background: rgba(26, 30, 38, 0.95) !important;
-    border: 1px solid rgba(255, 52, 52, 0.45) !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
     padding: 0 !important;
     margin: 0 !important;
+    width: auto !important;
+    height: auto !important;
+    cursor: pointer !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    text-align: center !important;
-    cursor: pointer !important;
-    transition: all .2s ease !important;
-    position: relative !important;
+    transition: transform .2s ease, opacity .2s ease !important;
+    opacity: 0.85;
 }}
 
 div[data-testid="stFileUploader"] button:hover {{
-    transform: scale(1.06) !important;
-    background: rgba(255, 52, 52, 0.25) !important;
-    border-color: var(--red) !important;
+    transform: scale(1.18) !important;
+    background: transparent !important;
+    opacity: 1 !important;
 }}
 
-/* سنترة الأيقونة في المنتصف رأسياً وأفقياً بدقة */
 div[data-testid="stFileUploader"] button:before {{
     content: "📷";
-    font-size: 1.05rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    line-height: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
+    font-size: 1.35rem;
+    line-height: 1;
 }}
 
 div[data-testid="stFileUploader"] button span,
@@ -545,7 +532,7 @@ st.markdown("""
 _, col_search, _ = st.columns([1, 2.6, 1])
 
 with col_search:
-    col_input, col_btn = st.columns([0.91, 0.09])
+    col_input, col_btn = st.columns([0.92, 0.08])
     with col_input:
         user_query = st.text_input(
             "Search",
